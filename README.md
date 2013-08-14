@@ -40,12 +40,17 @@ ok
 
 ## Usage
 
-    ```go
-    import "github.com/steakknife/securecompare"
+```go
+    
+import "github.com/steakknife/securecompare"
 
-    ...
-    securecompare.Equal(a, b)
-    ```
+// ...
+
+if securecompare.Equal(a, b) {
+    // ..
+}
+    
+```
 
 ## License
 
