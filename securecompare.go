@@ -7,11 +7,12 @@ import (
 
 // convert 0 or 1 to 000..0 or 111...1 in constant time
 func DupBitToInt64(x int64) (result int64) {
-    result = 0
-    for i := 0; i < 64; i++ {
-        result |= (x << uint(i))
-    }
-    return
+    x1 := x | x<<1
+    x2 := x1 | x1<<2
+    x3 := x2 | x2<<4
+    x4 := x3 | x3<<8
+    x5 := x4 | x4<<16
+    return x5 | x5<<32
 }
 
 // convert 0 or 1 to 000..0 or 111...1 in constant time
@@ -20,8 +21,10 @@ func DupBitToInt(x int) int {
 }
 
 // convert 0 or 1 to 000..0 or 111...1 in constant time
-func DupBitToInt8(x int8) (result int8) {
-    return int8(DupBitToInt64(int64(x)))
+func DupBitToInt8(x int8) int8 {
+    x1 := x | x<<1
+    x2 := x1 | x1<<2
+    return x2 | x2<<4
 }
 
 // convert a bool to int (0 or 1) in constant time
@@ -45,7 +48,6 @@ func BoolToInt8(b bool) int8 {
 func ChooseInt(cond bool, t, f int) int {
     mask := DupBitToInt(BoolToInt(cond))
     return (t & mask) | (f & ^mask)
-
 }
 
 // constant time version of cond ? t : f
