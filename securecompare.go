@@ -1,8 +1,9 @@
 package securecompare
 
+// #include "securecompare.h"
+import "C"
 import (
     "unsafe"
-    "fmt"
 )
 
 // convert 0 or 1 to 000..0 or 111...1 in constant time
@@ -27,21 +28,33 @@ func DupBitToInt8(x int8) int8 {
     return x2 | x2<<4
 }
 
+const sixtyfourbit = uint64(uint(0x7fffffffffffffff)) == uint64(0x7fffffffffffffff)
+
 // convert a bool to int (0 or 1) in constant time
 func BoolToInt(b bool) int {
-    p := unsafe.Pointer(&b)
-    fmt.Sprint(p) // theres a go bug
-    return *(*int)(p)
+    result := int(*(*int)(unsafe.Pointer(&b)))
+    if sixtyfourbit { // 64-bit platforms
+        result <<= 63
+        result = int(uint(result) >> 63)
+    } else { // 32-bit platforms
+        result <<= 31
+        result = int(uint(result) >> 31)
+    }
+    return result
 }
 
 // convert a bool to int64 (0 or 1) in constant time
 func BoolToInt64(b bool) int64 {
-    return int64(BoolToInt(b))
+    result := int64(*(*int)(unsafe.Pointer(&b)))
+    result <<= 63
+    return int64(uint64(result) >> 63)
 }
 
 // convert a bool to int8 (0 or 1) in constant time
 func BoolToInt8(b bool) int8 {
-    return int8(BoolToInt(b))
+    result := int8(*(*int)(unsafe.Pointer(&b)))
+    result <<= 7
+    return int8(uint8(result) >> 7)
 }
 
 // constant time version of cond ? t : f

@@ -225,6 +225,60 @@ func TestCompare(t *testing.T) {
 
 // benchmarks
 
+func BenchmarkBoolToIntWarmUp(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        BoolToInt(true)
+    }
+}
+
+func BenchmarkBoolToIntFalse(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        BoolToInt(false)
+    }
+}
+
+func BenchmarkBoolToIntTrue(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        BoolToInt(true)
+    }
+}
+
+func BenchmarkBoolToInt64WarmUp(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        BoolToInt64(true)
+    }
+}
+
+func BenchmarkBoolToInt64False(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        BoolToInt64(false)
+    }
+}
+
+func BenchmarkBoolToInt64True(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        BoolToInt64(true)
+    }
+}
+
+func BenchmarkBoolToInt8WarmUp(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        BoolToInt8(true)
+    }
+}
+
+func BenchmarkBoolToInt8False(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        BoolToInt8(false)
+    }
+}
+
+func BenchmarkBoolToInt8True(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        BoolToInt8(true)
+    }
+}
+
 func BenchmarkDupBitToInt64(b *testing.B) {
     for i := 0; i < b.N; i++ {
         DupBitToInt64(0)
