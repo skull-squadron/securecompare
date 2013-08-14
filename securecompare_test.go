@@ -173,7 +173,6 @@ func TestChooseBytes(t *testing.T) {
     }
 }
 
-
 func testEqual(t *testing.T, a, b []byte) {
     if bytes.Equal(a, b) != Equal(a, b) {
         t.Error("Equal failed")
@@ -221,6 +220,33 @@ func TestCompare(t *testing.T) {
     testCompare(t, data7, data6)
     testCompare(t, data8, data7)
     testCompare(t, data8, data5)
+}
+
+func testIndex(t *testing.T, s, sep []byte) {
+    expected := bytes.Index(s, sep)
+    if actual := Index(s, sep); actual != expected {
+        t.Error(fmt.Sprint("failed s=", s, " b=", sep, " expected=",expected," actual=",actual))
+    }
+
+}
+
+func testIndexByte(t *testing.T, s []byte, c byte) {
+    expected := bytes.IndexByte(s, c)
+    if actual := IndexByte(s, c); actual != expected {
+        t.Error(fmt.Sprint("failed s=", s, " c=", c, " expected=",expected," actual=",actual))
+    }
+
+}
+
+func TestIndex(t *testing.T) {
+    testIndex(t, []byte{0x11, 0x22, 0x33}, []byte{0x11})
+    testIndex(t, []byte{0x11, 0x22, 0x33}, []byte{0x11, 0x22})
+}
+
+func TestIndexByte(t *testing.T) {
+    testIndexByte(t, []byte{0x11, 0x22, 0x33}, 0x11)
+    testIndexByte(t, []byte{0x11, 0x22, 0x33}, 0x22)
+    testIndexByte(t, []byte{0x11, 0x22, 0x33}, 0x55)
 }
 
 // benchmarks

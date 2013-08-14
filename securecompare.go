@@ -1,10 +1,12 @@
 package securecompare
 
-// #include "securecompare.h"
 import "C"
 import (
     "unsafe"
 )
+
+// 64-bit platform?
+const sixtyfourbit = uint64(uint(0x7fffffffffffffff)) == uint64(0x7fffffffffffffff)
 
 // convert 0 or 1 to 000..0 or 111...1 in constant time
 func DupBitToInt64(x int64) (result int64) {
@@ -17,8 +19,21 @@ func DupBitToInt64(x int64) (result int64) {
 }
 
 // convert 0 or 1 to 000..0 or 111...1 in constant time
+func DupBitToInt32(x int32) (result int32) {
+    x1 := x | x<<1
+    x2 := x1 | x1<<2
+    x3 := x2 | x2<<4
+    x4 := x3 | x3<<8
+    return x4 | x4<<16
+}
+
+// convert 0 or 1 to 000..0 or 111...1 in constant time
 func DupBitToInt(x int) int {
-    return int(DupBitToInt64(int64(x)))
+    if sixtyfourbit {
+        return int(DupBitToInt64(int64(x)))
+    } else {
+        return int(DupBitToInt32(int32(x)))
+    }
 }
 
 // convert 0 or 1 to 000..0 or 111...1 in constant time
@@ -27,8 +42,6 @@ func DupBitToInt8(x int8) int8 {
     x2 := x1 | x1<<2
     return x2 | x2<<4
 }
-
-const sixtyfourbit = uint64(uint(0x7fffffffffffffff)) == uint64(0x7fffffffffffffff)
 
 // convert a bool to int (0 or 1) in constant time
 func BoolToInt(b bool) int {
@@ -121,6 +134,11 @@ func Compare(a, b []byte) int {
     return ChooseInt(swapped, result, -result)
 }
 
+// constant-time version of bytes.Contains()
+func Contains(b, subslice []byte) bool {
+    return Index(b, subslice) != -1
+}
+
 // constant-time version of bytes.Equal()
 func Equal(a, b []byte) bool {
     if len(a) != len(b) {
@@ -133,4 +151,41 @@ func Equal(a, b []byte) bool {
     }
 
     return (result == 0)
+}
+
+// constant-time version of bytes.Index()
+func Index(s, sep []byte) int {
+    n := len(sep)
+    if n == 0 {
+        return 0
+    }
+    m := len(sep)
+    if n > m {
+        return -1
+    }
+    last := m - n + 1
+    result := -1
+    found := 0
+    for i := 0; i < last; i++ {
+        match := 1
+        for j := 0; j < n; j++ {
+            match &= BoolToInt(s[i] == sep[j])
+        }
+        result = ChooseInt(found == 0, i, result)
+        found |= match
+    }
+    return result
+}
+
+// constant-time version of bytes.IndexByte()
+func IndexByte(s []byte, c byte) int {
+    result := -1
+    matched := 0
+
+    for i := range s {
+        found := s[i] == c
+        result = ChooseInt(matched == 0, ChooseInt(found, i, -1), result)
+        matched |= BoolToInt(found)
+    }
+    return result
 }
