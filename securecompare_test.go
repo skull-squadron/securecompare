@@ -7,7 +7,16 @@ import (
     "bytes"
 )
 
+func make1mib(b byte) []byte {
+        result := make([]byte, 1024*1024)
+        for i := range result {
+            result[i] = b
+        }
+        return result
+}
+
 var (
+    data0, _ = hex.DecodeString("ffff")
     data1, _ = hex.DecodeString("00bb73ad508e67b211ecaba7d3d592ab46983d50dc")
     data2, _ = hex.DecodeString("01bb73ad508e67b211ecaba7d3d592ab46983d50dc")
     data3, _ = hex.DecodeString("00bb73ad508e67b211ecaba7d3d592ab46983d50de")
@@ -16,11 +25,11 @@ var (
     data6, _ = hex.DecodeString("00bb73ad508e67b211ecaba7d3d592ab46983d5000")
     data7, _ = hex.DecodeString("00bb73ad508e67b211ecaba7d3d592ab46983d500000")
     data8, _ = hex.DecodeString("00")
-    x = make([]byte, 1024*1024)
-    y = make([]byte, 1024*1024)
+    mib0 = make1mib(0xAA)
+    mib1 = make1mib(0x55)
+    mib2 = make1mib(0x00)
+    mib3 = make1mib(0x00)
 )
-
-
 
 func TestDupBitToInt64(t *testing.T) {
     if DupBitToInt64(0) != 0 {
@@ -147,7 +156,6 @@ func TestChooseInt64(t *testing.T) {
         t.Error("ChooseInt64 fails 6")
     }
 }
-
 
 func TestChooseBytes(t *testing.T) {
     if bytes.Compare(ChooseBytes(false, data1, data1), data1) != 0 {
@@ -323,15 +331,62 @@ func BenchmarkDupBitToInt8(b *testing.B) {
     }
 }
 
-func BenchmarkEqual1MiB(b *testing.B) {
+func BenchmarkEqual1MiB0(b *testing.B) {
     for i := 0; i < b.N; i++ {
-        Equal(x, y)
+        Equal(mib0, mib0)
     }
 }
 
-func BenchmarkCompare1MiB(b *testing.B) {
+func BenchmarkEqual1MiB1(b *testing.B) {
     for i := 0; i < b.N; i++ {
-        Compare(x, y)
+        Equal(mib0, mib1)
     }
 }
 
+func BenchmarkEqual1MiB2(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        Equal(mib0, mib2)
+    }
+}
+
+func BenchmarkEqual1MiB3(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        Equal(mib1, mib2)
+    }
+}
+
+func BenchmarkEqual1MiB4(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        Equal(mib2, mib3)
+    }
+}
+
+func BenchmarkCompare1MiB0(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        Compare(mib0, mib0)
+    }
+}
+
+func BenchmarkCompare1MiB1(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        Compare(mib0, mib1)
+    }
+}
+
+func BenchmarkCompare1MiB2(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        Compare(mib0, mib2)
+    }
+}
+
+func BenchmarkCompare1MiB3(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        Compare(mib1, mib2)
+    }
+}
+
+func BenchmarkCompare1MiB4(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        Compare(mib2, mib3)
+    }
+}

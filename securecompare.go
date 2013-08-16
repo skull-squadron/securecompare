@@ -9,13 +9,18 @@ import (
 const sixtyfourbit = uint64(uint(0x7fffffffffffffff)) == uint64(0x7fffffffffffffff)
 
 // convert 0 or 1 to 000..0 or 111...1 in constant time
-func DupBitToInt64(x int64) (result int64) {
+func DupBitToInt8(x int8) int8 {
+    x1 := x | x<<1
+    x2 := x1 | x1<<2
+    return x2 | x2<<4
+}
+
+// convert 0 or 1 to 000..0 or 111...1 in constant time
+func DupBitToInt16(x int16) int16 {
     x1 := x | x<<1
     x2 := x1 | x1<<2
     x3 := x2 | x2<<4
-    x4 := x3 | x3<<8
-    x5 := x4 | x4<<16
-    return x5 | x5<<32
+    return x3 | x3<<8
 }
 
 // convert 0 or 1 to 000..0 or 111...1 in constant time
@@ -28,19 +33,111 @@ func DupBitToInt32(x int32) (result int32) {
 }
 
 // convert 0 or 1 to 000..0 or 111...1 in constant time
+func DupBitToInt64(x int64) (result int64) {
+    x1 := x | x<<1
+    x2 := x1 | x1<<2
+    x3 := x2 | x2<<4
+    x4 := x3 | x3<<8
+    x5 := x4 | x4<<16
+    return x5 | x5<<32
+}
+
+// convert 0 or 1 to 000..0 or 111...1 in constant time
 func DupBitToInt(x int) int {
     if sixtyfourbit {
-        return int(DupBitToInt64(int64(x)))
+        x1 := x | x<<1
+        x2 := x1 | x1<<2
+        x3 := x2 | x2<<4
+        x4 := x3 | x3<<8
+        x5 := x4 | x4<<16
+        return x5 | x5<<32
     } else {
-        return int(DupBitToInt32(int32(x)))
+        x1 := x | x<<1
+        x2 := x1 | x1<<2
+        x3 := x2 | x2<<4
+        x4 := x3 | x3<<8
+        return x4 | x4<<16
     }
 }
 
 // convert 0 or 1 to 000..0 or 111...1 in constant time
-func DupBitToInt8(x int8) int8 {
+func DupBitToUint8(x uint8) uint8 {
     x1 := x | x<<1
     x2 := x1 | x1<<2
     return x2 | x2<<4
+}
+
+// convert 0 or 1 to 000..0 or 111...1 in constant time
+func DupBitToUint16(x uint16) uint16 {
+    x1 := x | x<<1
+    x2 := x1 | x1<<2
+    x3 := x2 | x2<<4
+    return x3 | x3<<8
+}
+
+// convert 0 or 1 to 000..0 or 111...1 in constant time
+func DupBitToUint32(x uint32) (result uint32) {
+    x1 := x | x<<1
+    x2 := x1 | x1<<2
+    x3 := x2 | x2<<4
+    x4 := x3 | x3<<8
+    return x4 | x4<<16
+}
+
+// convert 0 or 1 to 000..0 or 111...1 in constant time
+func DupBitToUint64(x uint64) (result uint64) {
+    x1 := x | x<<1
+    x2 := x1 | x1<<2
+    x3 := x2 | x2<<4
+    x4 := x3 | x3<<8
+    x5 := x4 | x4<<16
+    return x5 | x5<<32
+}
+
+// convert 0 or 1 to 000..0 or 111...1 in constant time
+func DupBitToUint(x uint) uint {
+    if sixtyfourbit {
+        x1 := x | x<<1
+        x2 := x1 | x1<<2
+        x3 := x2 | x2<<4
+        x4 := x3 | x3<<8
+        x5 := x4 | x4<<16
+        return x5 | x5<<32
+    } else {
+        x1 := x | x<<1
+        x2 := x1 | x1<<2
+        x3 := x2 | x2<<4
+        x4 := x3 | x3<<8
+        return x4 | x4<<16
+    }
+}
+
+// convert a bool to int8 (0 or 1) in constant time
+func BoolToInt8(b bool) int8 {
+    result := int8(*(*int)(unsafe.Pointer(&b)))
+    result <<= 7
+    return int8(uint8(result) >> 7)
+}
+
+// convert a bool to int8 (0 or 1) in constant time
+func BoolToInt16(b bool) int16 {
+    result := int16(*(*int)(unsafe.Pointer(&b)))
+    result <<= 15
+    return int16(uint16(result) >> 15)
+}
+
+// convert a bool to int8 (0 or 1) in constant time
+func BoolToInt32(b bool) int32 {
+    result := int32(*(*int)(unsafe.Pointer(&b)))
+    result <<= 31
+    return int32(uint32(result) >> 31)
+}
+
+// convert a bool to int64 (0 or 1) in constant time
+func BoolToInt64(b bool) int64 {
+    result := int64(*(*int)(unsafe.Pointer(&b)))
+    result <<= 63
+    return int64(uint64(result) >> 63)
 }
 
 // convert a bool to int (0 or 1) in constant time
@@ -56,24 +153,44 @@ func BoolToInt(b bool) int {
     return result
 }
 
-// convert a bool to int64 (0 or 1) in constant time
-func BoolToInt64(b bool) int64 {
-    result := int64(*(*int)(unsafe.Pointer(&b)))
-    result <<= 63
-    return int64(uint64(result) >> 63)
-}
-
-// convert a bool to int8 (0 or 1) in constant time
-func BoolToInt8(b bool) int8 {
-    result := int8(*(*int)(unsafe.Pointer(&b)))
+// convert a bool to uint8 (0 or 1) in constant time
+func BoolToUint8(b bool) uint8 {
+    result := uint8(*(*uint)(unsafe.Pointer(&b)))
     result <<= 7
-    return int8(uint8(result) >> 7)
+    return result >> 7
 }
 
-// constant time version of cond ? t : f
-func ChooseInt(cond bool, t, f int) int {
-    mask := DupBitToInt(BoolToInt(cond))
-    return (t & mask) | (f & ^mask)
+// convert a bool to uint8 (0 or 1) in constant time
+func BoolToUint16(b bool) uint16 {
+    result := uint16(*(*uint)(unsafe.Pointer(&b)))
+    result <<= 15
+    return result >> 15
+}
+
+// convert a bool to uint8 (0 or 1) in constant time
+func BoolToUint32(b bool) uint32 {
+    result := uint32(*(*uint)(unsafe.Pointer(&b)))
+    result <<= 31
+    return result >> 31
+}
+
+// convert a bool to uint64 (0 or 1) in constant time
+func BoolToUint64(b bool) uint64 {
+    result := uint64(*(*uint)(unsafe.Pointer(&b)))
+    result <<= 63
+    return result >> 63
+}
+
+// convert a bool to uint (0 or 1) in constant time
+func BoolToUint(b bool) uint {
+    result := uint(*(*uint)(unsafe.Pointer(&b)))
+    if sixtyfourbit { // 64-bit platforms
+        result <<= 63
+        return result >> 63
+    } else { // 32-bit platforms
+        result <<= 31
+        return result >> 31
+    }
 }
 
 // constant time version of cond ? t : f
@@ -83,8 +200,56 @@ func ChooseInt8(cond bool, t, f int8) int8 {
 }
 
 // constant time version of cond ? t : f
+func ChooseInt16(cond bool, t, f int16) int16 {
+    mask := DupBitToInt16(BoolToInt16(cond))
+    return (t & mask) | (f & ^mask)
+}
+
+// constant time version of cond ? t : f
+func ChooseInt32(cond bool, t, f int32) int32 {
+    mask := DupBitToInt32(BoolToInt32(cond))
+    return (t & mask) | (f & ^mask)
+}
+
+// constant time version of cond ? t : f
 func ChooseInt64(cond bool, t, f int64) int64 {
     mask := DupBitToInt64(BoolToInt64(cond))
+    return (t & mask) | (f & ^mask)
+}
+
+// constant time version of cond ? t : f
+func ChooseInt(cond bool, t, f int) int {
+    mask := DupBitToInt(BoolToInt(cond))
+    return (t & mask) | (f & ^mask)
+}
+
+// constant time version of cond ? t : f
+func ChooseUint8(cond bool, t, f uint8) uint8 {
+    mask := DupBitToUint8(BoolToUint8(cond))
+    return (t & mask) | (f & ^mask)
+}
+
+// constant time version of cond ? t : f
+func ChooseUint16(cond bool, t, f uint16) uint16 {
+    mask := DupBitToUint16(BoolToUint16(cond))
+    return (t & mask) | (f & ^mask)
+}
+
+// constant time version of cond ? t : f
+func ChooseUint32(cond bool, t, f uint32) uint32 {
+    mask := DupBitToUint32(BoolToUint32(cond))
+    return (t & mask) | (f & ^mask)
+}
+
+// constant time version of cond ? t : f
+func ChooseUint64(cond bool, t, f uint64) uint64 {
+    mask := DupBitToUint64(BoolToUint64(cond))
+    return (t & mask) | (f & ^mask)
+}
+
+// constant time version of cond ? t : f
+func ChooseUint(cond bool, t, f uint) uint {
+    mask := DupBitToUint(BoolToUint(cond))
     return (t & mask) | (f & ^mask)
 }
 
