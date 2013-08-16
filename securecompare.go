@@ -1,9 +1,6 @@
 package securecompare
 
-import "C"
-import (
-    "unsafe"
-)
+import "unsafe"
 
 // 64-bit platform?
 const sixtyfourbit = uint64(uint(0x7fffffffffffffff)) == uint64(0x7fffffffffffffff)
