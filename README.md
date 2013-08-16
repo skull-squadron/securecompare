@@ -7,6 +7,8 @@ This leads to side-channel attacks.
 
 ### All securecompare operations use constant-time constructs (e.g., math).
 
+#### Note: minor differences per anecdotal `go test -bench` are due to timing inaccuracies.  Across many samples they are equal.
+
 ```shell
 PASS
 BenchmarkBoolToIntWarmUp     100000000           12.2 ns/op
