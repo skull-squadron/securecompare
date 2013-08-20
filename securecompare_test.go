@@ -608,7 +608,6 @@ func BenchmarkMSBInt32ForOther(b *testing.B) {
         MSBInt32(0x01234567)
     }
 }
-/*
 
 func BenchmarkBoolToIntWarmUp(b *testing.B) {
     for i := 0; i < b.N; i++ {
@@ -742,4 +741,3 @@ func BenchmarkCompare1MiB4(b *testing.B) {
     }
 }
 
-*/
