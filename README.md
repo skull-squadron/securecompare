@@ -3,7 +3,7 @@
 ### Don't use `bytes.Equal()` for comparing hashes!
 ### BAD! (and evil naughty Zoot)
 
-Recommended alternative: 
+#### Try this recommended alternative first!
 
 ```go
 import "crypto/subtle"
