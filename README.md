@@ -1,7 +1,15 @@
 # securecompare for Go
 
 ### Don't use `bytes.Equal()` for comparing hashes!
-### BAD!
+### BAD! (and evil naughty Zoot)
+
+Recommended alternative: 
+
+```go
+import "crypto/subtle"
+
+xyEqual := subtle.ConstantTimeCompare(x, y) == 1
+```
 
 This leads to side-channel attacks.
 
