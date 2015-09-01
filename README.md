@@ -3,15 +3,15 @@
 ### Don't use `bytes.Equal()` for comparing hashes!
 ### BAD! (and evil naughty Zoot)
 
-#### Try this recommended alternative first!
+This leads to side-channel attacks.
+
+#### **Try this recommended alternative first!**
 
 ```go
 import "crypto/subtle"
 
 xyEqual := subtle.ConstantTimeCompare(x, y) == 1
 ```
-
-This leads to side-channel attacks.
 
 ### All securecompare operations use constant-time constructs (e.g., math).
 
