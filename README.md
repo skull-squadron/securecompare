@@ -1,3 +1,6 @@
+[![GoDoc](https://godoc.org/github.com/steakknife/securecompare?status.png)](https://godoc.org/github.com/steakknife/securecompare)
+
+
 # securecompare for Go
 
 ### Don't use `bytes.Equal()` for comparing hashes!
